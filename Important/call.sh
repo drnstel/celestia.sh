@@ -10,7 +10,7 @@ case $1 in
 	;;
 
 	network)
-		exec $MAIN_DIR/Network.sh
+		exec $MAIN_DIR/Net_Prep.sh
 	;;
 
 	wallpaper)
@@ -26,5 +26,16 @@ case $1 in
 	;;
 
 	terminal)
-		exec $MAIN_DIR/Terminal.sh
+
+		case $2 in
+
+			kitty)
+				exec $MAIN_DIR/Terminal.sh kitty
+			;;
+
+			foot)
+				exec $MAIN_DIR/Terminal.sh foot
+			;;
+		esac
+	;;
 esac

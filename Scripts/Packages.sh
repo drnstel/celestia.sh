@@ -1,6 +1,6 @@
 #!/bin/bash
 
 USER=$(whoami)
-HOME_DIR=$(find /home/$USER -type d -name '.scripts' | head -n 1)
+MAIN_DIR=$(find /home/$USER -type d -name 'celestia' | head -n 1)
 
-expect $HOME_DIR/.packages.exp
+expect $MAIN_DIR/Scripts/.update/.packages.exp

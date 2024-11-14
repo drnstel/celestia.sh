@@ -4,12 +4,11 @@
 # The USER variable just checks for who the current user is.
 # The MAIN_DIR variable locates the celestia folder.
 USER=$(whoami)
-MAIN_DIR=$(find /home/$USER -type d -name '.celestia' | head -n 1)
+MAIN_DIR=$(find /home/$USER -type d -name 'Celestia' | head -n 1)
 
 # Checks the .conf file for the wallpaper the user states.
 # If it works (praying), it should be fine.
-PREWALLPAPER=$(grep 'Wallpaper = ' $MAIN_DIR/startup.conf)
-PREWALLPAPER=${PREWALLPAPER##*=}
+PREWALLPAPER=$(grep 'Wallpaper = ' $MAIN_DIR/celestia.conf); PREWALLPAPER=${PREWALLPAPER##*=}
 SEL_WALLPAPER=$(echo $PREWALLPAPER | tr -d ' ')
 
 # Sets the wallpaper image that the user states.
