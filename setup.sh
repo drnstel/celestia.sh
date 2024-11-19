@@ -1,21 +1,34 @@
 #!/bin/bash
 
-USER=$(whoami) # Grabs the user's name
+################################################################################################################
+################################################# STARTING SETUP ###############################################
+################################################################################################################
+
+# Grabs the user's name
+USER=$(whoami)
 
 echo "Locating directories... (This may take a bit.)"
 
 # Locates the script
+echo "Locating script directory..."
 SCRIPT_DIR=$(find /home/$USER -type f -name '.dir-store.sh' | head -n 1)
+echo "Done."
 
 # Locates the temp/ folder using the dir-store script
+echo "Locating temp directory for further use..."
 TEMP_DIR=$(exec $SCRIPT_DIR temp)
+echo "Done."
 
 # Locates the celestia-setup/ folder using the dir-store script
+echo "Locating main directory for further use..."
 MAIN_DIR=$(exec $SCRIPT_DIR dir)
+echo "Done."; sleep 0.5; clear
 
-echo "Done."; sleep 0.5; # clear
+################################################################################################################
+################################################ TERMINAL SIZE #################################################
+################################################################################################################
 
-echo -e "Hold on, currently getting your terminal size!\n(please do NOT resize this terminal as this will screw up the setup script.)" 
+echo -e "Currently getting your terminal size!\n(please do NOT resize this terminal as this will screw up the setup script.)" 
 
 if [ -s $TEMP_DIR/monitor-res ]; then 
     # Will do nothing if there is nothing in the monitor-res file
@@ -31,7 +44,7 @@ fi
 # Runs the python script just for making sure whiptail can understand the terminal res
 RES=$(python $MAIN_DIR/display.py)
 
-echo "Done."; sleep 0.5; # clear
+echo "Done."; sleep 2; clear
 
 # First dialog prompt
 whiptail --title "Celestia" --msgbox "Welcome to celestia!\nThis is the setup script for celestia, a startup script manager.\nThis package includes scripts for\nWallpaper\nNetwork\nAGS Bar\nFeh\nTerminal\nUSB\nPackages (upgrading)\n\nThe next prompt will be for deciding what you want to enable. When ready, please press <ENTER>" $RES
@@ -40,7 +53,7 @@ whiptail --title "Celestia" --msgbox "Welcome to celestia!\nThis is the setup sc
 DIACMD=(whiptail --title "Celestia" --separate-output --checklist "Choose what you want from the list! (Press space on the selection to turn on what you want.)" $RES 9)
 DIAOPT=(
     "Repair" "Break your celestia? No worries! Just check everything else off and this on." OFF
-    "Verbose" "Want to see what celestia is doing? No problem! Feel free to check this.\n\n" OFF
+    "Verbose" "Want to see what celestia is doing? No problem! Feel free to check this." OFF
     "Wallpaper" "This configures a script for your wallpaper! Includes: swww-daemon" ON
     "Network" "This configures a script for your network manager. Includes: nmcli" OFF
     "AGS Bar" "This configures a script for an AGS Bar. But isn't needed. Includes: AGS" OFF
@@ -53,15 +66,15 @@ DIAOPT=(
 # Runs the dialog prompt
 DIACH=$("${DIACMD[@]}" "${DIAOPT[@]}" 2>&1 >/dev/tty)
 
-#clear
+clear
 
 # Checks if there is ANYTHING written in temp/DiaChosen
-if [ -s $TEMP_DIR'/DiaChosen' ]; then
+if [ -s $TEMP_DIR'/dia-chosen' ]; then
     # Do nothing
     true
 else
     # Write the dialog selections into temp/DiaChosen
-    echo $DIACH >> $TEMP_DIR'/DiaChosen'
+    echo $DIACH >> $TEMP_DIR'/dia-chosen'
 fi
 
 echo "Making .config/celestia..."
@@ -123,9 +136,17 @@ sleep 1
 
 OSCMD=$(whiptail --title "Celestia" --separate-output --menu "Select your operating system for the celestia setup to run smoothly. (If your OS is not listed, this means your flavour of linux has NOT been tested.)" $RES 3 "Arch Based OS (pacman/aur)" "Will use Arch repos and such for the rest of this install." "Debian/Ubuntu Based OS (apt)" "Will use Apt repos and such for the rest of this install." "Fedora Based OS (dnf)" "Will use dnf repos and such for the rest of this install. (UNTESTED)" 2>&1 >/dev/tty)
 
+if [[ $OSCMD == "" ]]; then
+    echo "That was not an option. Ending there."
+    exit 1
+else
+    true
+fi
+
+
 IS_DIACH_VERBOSE=$(grep "Verbose" $TEMP_DIR/dia-chosen >>/dev/null; echo $?)
 
-if [[ $IS_DIACH_VERBOSE == "0" ]]; then
+if [ $IS_DIACH_VERBOSE -eq 0 ]; then
 
     source 'build-files/wp_prep.sh'
     source 'build-files/net_prep.sh'
@@ -141,7 +162,7 @@ if [[ $IS_DIACH_VERBOSE == "0" ]]; then
             Wallpaper)
                 echo "Building wallpaper files..."
                 sleep 2
-                # clear
+                clear
                 wp_prep -v
             ;;
             Network)
