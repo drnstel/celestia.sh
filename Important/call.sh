@@ -14,7 +14,7 @@ case $1 in
 	;;
 
 	wallpaper)
-		exec $MAIN_DIR/WallpaperPlus.sh
+		exec $MAIN_DIR/Wallpaper.sh
 	;;
 
 	usb)
