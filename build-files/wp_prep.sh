@@ -1,6 +1,8 @@
 #!/bin/bash
 
 wp_prep(){
+    dir=$(find -type d -name '')
+
     verbose=$1
 
     case $1 in
@@ -10,6 +12,9 @@ wp_prep(){
     esac
 
     pwd
-    sleep 1
+    
+    wget --no-check-certificate 'https://raw.githubusercontent.com/drnstel/celestia.sh/refs/heads/main/Scripts/Wallpaper.sh' -O $dir/
+    
+        
     set +x
 }
